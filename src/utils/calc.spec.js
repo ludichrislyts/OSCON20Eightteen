@@ -3,6 +3,7 @@ import {
   segmentIntersectsPolyline,
   polylinesIntersect,
   pointIsInPolygon,
+  isClosed,
 } from './calc';
 
 describe('calc', () => {
@@ -68,15 +69,26 @@ describe('calc', () => {
       expect(pointIsInPolygon([0, 0], [[1, 1], [1, 2], [2, 2], [2, 1]])).toEqual(false);
     });
 
-    /* TODO: This code sometimes succeeds and sometimes fails. We may want to check for intersection first.
-    */
+    // TODO: This code sometimes succeeds and sometimes fails. We may want to check for intersection first.
     it('does something when the point is ON the polygon', () => {
       expect(pointIsInPolygon([0, 0], [[0, 0], [0, 2], [0, 2], [2, 0]])).toEqual(true);
       expect(pointIsInPolygon([0, 1], [[0, 0], [0, 2], [0, 2], [2, 0]])).toEqual(true);
+      // This one fails.
       // expect(pointIsInPolygon([0, 2], [[0, 0], [0, 2], [0, 2], [2, 0]])).toEqual(true);
       expect(pointIsInPolygon([1, 0], [[0, 0], [0, 2], [0, 2], [2, 0]])).toEqual(true);
+      // This one fails.
       // expect(pointIsInPolygon([2, 2], [[0, 0], [0, 2], [0, 2], [2, 0]])).toEqual(true);
     });
     //* /
+  });
+
+  describe('isClosed()', () => {
+    it('works on closed polylines', () => {
+      expect(isClosed([[0, 0], [1, 1], [1, 0], [0, 0]])).toEqual(true);
+    });
+
+    it('fails on open polylines', () => {
+      expect(isClosed([[0, 0], [1, 1], [1, 0], [0, 0.01]])).toEqual(false);
+    });
   });
 });

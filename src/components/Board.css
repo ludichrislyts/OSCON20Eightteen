@@ -1,0 +1,9 @@
+.board > path {
+  fill: none;
+  stroke: #48F;
+  stroke-width: 3px;
+}
+
+.board > path:first-child {
+  fill: #333;
+}
