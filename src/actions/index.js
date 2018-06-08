@@ -2,7 +2,7 @@ import { actions, directions } from '../utils/constants';
 import { isClosed } from '../utils/calc';
 
 const {
-  BOARD_SET, PLAYER_ADD, PLAYER_DIRECTION, TIME,
+  BOARD_SET, PLAYER_ADD, PLAYER_DIRECTION, PLAYER_CURRENT, TIME,
 } = actions;
 
 const {
@@ -34,6 +34,8 @@ const player = {
     if (Number.isNaN(y)) throw new Error(`y should be a number. Received ${inputY}`);
     return { type: PLAYER_ADD, data: { name, x, y } };
   },
+
+  claim: data => ({ type: PLAYER_CURRENT, data }),
 
   up: name => ({ type: PLAYER_DIRECTION, data: { name, direction: UP } }),
   down: name => ({ type: PLAYER_DIRECTION, data: { name, direction: DOWN } }),

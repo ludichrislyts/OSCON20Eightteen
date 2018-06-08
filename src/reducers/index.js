@@ -4,7 +4,7 @@ import { segmentIntersectsPolyline, segmentsIntersect } from '../utils/calc';
 export const SECOND = 1000;
 export const START_COUNTDOWN = 3 * SECOND;
 const {
-  BOARD_SET, PLAYER_ADD, PLAYER_DIRECTION, TIME,
+  BOARD_SET, PLAYER_ADD, PLAYER_CURRENT, PLAYER_DIRECTION, TIME,
 } = actions;
 const { STARTING, PLAYING, CRASHED } = playerStates;
 
@@ -60,6 +60,10 @@ export default (state = initialState, action) => {
       // Ignore adding players with a name that already exists on the board
       if (state.players[name]) return state;
       return updatePlayer(name, initializePlayer(x, y, state.time));
+    }
+
+    case PLAYER_CURRENT: {
+      return { ...state, currentPlayer: action.data };
     }
 
     case PLAYER_DIRECTION: {

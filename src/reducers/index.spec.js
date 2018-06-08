@@ -7,7 +7,7 @@ const reducer = reducerFreezer(indexReducer);
 const reduce = (state, ...actionList) => actionList.reduce(reducer, state);
 
 const {
-  BOARD_SET, PLAYER_ADD, PLAYER_DIRECTION, TIME,
+  BOARD_SET, PLAYER_ADD, PLAYER_DIRECTION, PLAYER_CURRENT, TIME,
 } = actions;
 const { LEFT, RIGHT, UP } = directions;
 const { STARTING, PLAYING, CRASHED } = playerStates;
@@ -121,6 +121,17 @@ describe('reducers/index', () => {
       expect(nextState.players.bob.direction).toHaveLength(2);
       expect(Object.keys(nextState.players)).toHaveLength(1);
       expect(nextState).toBe(state);
+    });
+  });
+
+  describe(PLAYER_CURRENT, () => {
+    it('should claim the current player', () => {
+      const bobIsMe = {
+        type: PLAYER_CURRENT,
+        data: 'bob',
+      };
+      const state = reduce(initialState, bobAdd, bobIsMe);
+      expect(state.currentPlayer).toEqual('bob');
     });
   });
 

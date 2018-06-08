@@ -67,6 +67,10 @@ describe('actions', () => {
       });
     });
 
+    it('claim()', () => {
+      expect(player.claim('ian')).toEqual({ type: 'PLAYER_CURRENT', data: 'ian' });
+    });
+
     it('up()', () => {
       expect(player.up('ian')).toEqual({ type: 'PLAYER_DIRECTION', data: { name: 'ian', direction: [0, -1] } });
     });

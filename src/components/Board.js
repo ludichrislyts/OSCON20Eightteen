@@ -6,16 +6,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Polyline from './Polyline';
 
-export const Component = ({ obstacles = [], ...rest }) => (
+export const Board = ({ obstacles = [], ...rest }) => (
   <g className="board" {...rest}>
     { obstacles.map((poly, index) => (<Polyline key={`ob-${index}`} points={poly} />))}
   </g>
 );
 
-Component.propTypes = {
+Board.propTypes = {
   obstacles: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number))),
 };
 
-export const select = state => state.obstacles;
+export const select = state => ({ obstacles: state.obstacles });
 
-export default connect(select)(Component);
+const dispatchers = () => ({});
+
+export default connect(select, dispatchers)(Board);
