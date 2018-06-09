@@ -8,12 +8,13 @@
   "rules": {
     "no-use-before-define": ["error", { "functions": false, "classes": false }],
     "max-len": ["warn", { "code": 120, "comments": 150 }],
-    "no-mixed-operators": ["error", {"allowSamePrecedence": true}],
+    "no-mixed-operators": [1, {"allowSamePrecedence": true}],
 
     "react/jsx-filename-extension": 0,
     "react/require-default-props": 0,
 
     "import/first": [1, { "absolute-first": false }],
+    "import/no-named-as-default": 0,
 
     "jest/no-disabled-tests": "warn",
     "jest/no-focused-tests": "error",
