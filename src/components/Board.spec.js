@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
-import { Component, select } from './Board';
+import { Board, select } from './Board';
 import reducer from '../reducers';
 import actions from '../actions';
 
@@ -27,12 +27,12 @@ describe('Board', () => {
     };
 
     it('renders without crashing', () => {
-      render(<Component />, node);
+      render(<Board />, node);
       expect(node.innerHTML).toEqual('<g class="board"></g>');
     });
 
     it('renders all the parts', () => {
-      const subject = make(<Component obstacles={board} />);
+      const subject = make(<Board obstacles={board} />);
       expect(subject.querySelectorAll('path')).toHaveLength(2);
     });
   });
@@ -41,7 +41,7 @@ describe('Board', () => {
     it('gets the board', () => {
       const action = actions.board.load(board);
       const state = reducer(reducer(), action);
-      expect(select(state)).toEqual(board);
+      expect(select(state).obstacles).toEqual(board);
     });
   });
 });

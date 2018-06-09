@@ -7,7 +7,7 @@ const reducer = reducerFreezer(indexReducer);
 const reduce = (state, ...actionList) => actionList.reduce(reducer, state);
 
 const {
-  BOARD_SET, PLAYER_ADD, PLAYER_DIRECTION, TIME,
+  BOARD_SET, PLAYER_ADD, PLAYER_DIRECTION, PLAYER_CURRENT, TIME,
 } = actions;
 const { LEFT, RIGHT, UP } = directions;
 const { STARTING, PLAYING, CRASHED } = playerStates;
@@ -64,7 +64,7 @@ const joeLeft = {
 
 const time = {
   type: TIME,
-  data: SECOND,
+  data: SECOND / 10,
 };
 
 const jumpStart = {
@@ -124,6 +124,17 @@ describe('reducers/index', () => {
     });
   });
 
+  describe(PLAYER_CURRENT, () => {
+    it('should claim the current player', () => {
+      const bobIsMe = {
+        type: PLAYER_CURRENT,
+        data: 'bob',
+      };
+      const state = reduce(initialState, bobAdd, bobIsMe);
+      expect(state.currentPlayer).toEqual('bob');
+    });
+  });
+
   describe(PLAYER_DIRECTION, () => {
     it("should change a player's direction", () => {
       const state = reduce(initialState, bobAdd, bobLeft);
@@ -152,7 +163,7 @@ describe('reducers/index', () => {
   describe(TIME, () => {
     it('should increase the timer', () => {
       const state = reduce(initialState, time);
-      expect(state.time).toBe(SECOND);
+      expect(state.time).toBe(SECOND / 10);
     });
 
     it('should not move players before their time', () => {

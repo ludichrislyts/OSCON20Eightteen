@@ -19,11 +19,11 @@ describe('Polyline', () => {
 
   it('renders without crashing', () => {
     render(<Polyline />, node);
-    expect(node.innerHTML).toEqual('<path d=""></path>');
+    expect(node.innerHTML).toEqual('');
   });
 
   it('renders attributes downward', () => {
-    const subject = make(<Polyline fill="#333" />);
+    const subject = make(<Polyline points={[[0, 0], [5, 5]]} fill="#333" />);
     expect(subject.getAttribute('fill')).toEqual('#333');
   });
 

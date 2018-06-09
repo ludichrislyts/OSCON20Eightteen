@@ -3,14 +3,15 @@ import { segmentIntersectsPolyline, segmentsIntersect } from '../utils/calc';
 
 export const SECOND = 1000;
 export const START_COUNTDOWN = 3 * SECOND;
+export const CRASH_LINGER = 2 * SECOND;
 const {
-  BOARD_SET, PLAYER_ADD, PLAYER_DIRECTION, TIME,
+  BOARD_SET, PLAYER_ADD, PLAYER_CURRENT, PLAYER_DIRECTION, TIME,
 } = actions;
 const { STARTING, PLAYING, CRASHED } = playerStates;
 
 export const initialState = {
   time: 0,
-  players: [],
+  players: {},
   obstacles: [],
 };
 
@@ -19,7 +20,7 @@ const initializePlayer = (x, y, currentTime) => ({
   y,
   startTime: currentTime + START_COUNTDOWN,
   status: STARTING,
-  speed: 5 / SECOND,
+  speed: 50 / SECOND,
   direction: directions.UP,
   lastDirection: null,
   path: [],
@@ -58,8 +59,13 @@ export default (state = initialState, action) => {
     case PLAYER_ADD: {
       const { x, y, name } = action.data;
       // Ignore adding players with a name that already exists on the board
-      if (state.players[name]) return state;
+      const current = state.players[name];
+      if (current && current.status !== CRASHED) return state;
       return updatePlayer(name, initializePlayer(x, y, state.time));
+    }
+
+    case PLAYER_CURRENT: {
+      return { ...state, currentPlayer: action.data };
     }
 
     case PLAYER_DIRECTION: {
@@ -109,6 +115,7 @@ export default (state = initialState, action) => {
             obstacles.some((obstacle) => {
               if (segmentIntersectsPolyline(p1, p2, obstacle)) {
                 newPlayer.status = CRASHED;
+                newPlayer.crashTime = time;
                 return true;
               }
               return false;
@@ -118,7 +125,10 @@ export default (state = initialState, action) => {
             if (newPlayer.status !== CRASHED) {
               playerPathHeads.forEach(([p3, p4, headName]) => {
                 if (headName === name) return;
-                if (segmentsIntersect(p1, p2, p3, p4)) newPlayer.status = CRASHED;
+                if (segmentsIntersect(p1, p2, p3, p4)) {
+                  newPlayer.status = CRASHED;
+                  newPlayer.crashTime = time;
+                }
               });
             }
 
@@ -127,6 +137,12 @@ export default (state = initialState, action) => {
               newPlayer.path = player.path.concat([[player.x, player.y]]);
               newPlayer.lastDirection = player.direction;
             }
+            break;
+          }
+
+          case CRASHED: {
+            if (time - player.crashTime < CRASH_LINGER) newPlayers[name] = player;
+            else somePlayersChanged = true;
             break;
           }
 
