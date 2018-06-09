@@ -4,23 +4,29 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import actions from '../actions';
 import { pointIsInPolygon } from '../utils/calc';
+import { playerStates } from '../utils/constants';
 
-export const PlayerStart = ({ visible = false, onSubmit }) => {
+export const PlayerStart = ({ visible = false, crashed = false, onSubmit }) => {
   const textInput = React.createRef();
   const submit = (evt) => {
     evt.preventDefault();
-    onSubmit(textInput.value);
+    const name = textInput.current.value;
+    if (name) onSubmit(textInput.current.value);
   };
   return (
-    <form className="player-start" visible={visible ? 'visible' : null} onSubmit={submit}>
-      <input ref={textInput} type="text" />
-      <button type="submit">Start</button>
-    </form>
+    <div className="player-start" visible={visible ? 'visible' : null} >
+      <form className="player-start__form" onSubmit={submit}>
+        <h3>{ crashed ? 'YOU HAVE DIED. Play again?' : 'Enter your name to start playing' }</h3>
+        <input ref={textInput} placeholder="or a nickname..." type="text" />
+        <button type="submit">Start</button>
+      </form>
+    </div>
   );
 };
 
 PlayerStart.propTypes = {
   visible: PropTypes.bool,
+  crashed: PropTypes.bool,
   onSubmit: PropTypes.func.isRequired,
 };
 
@@ -28,8 +34,11 @@ export const select = (state) => {
   const {
     currentPlayer, obstacles, minX, maxX, minY, maxY,
   } = state;
+  const player = state.players[currentPlayer];
+  const crashed = (player && player.status === playerStates.CRASHED) || (currentPlayer && !player);
   return {
-    visible: currentPlayer != null,
+    crashed,
+    visible: currentPlayer == null || crashed,
     perimeter: obstacles[0],
     minX,
     maxX,
@@ -59,10 +68,11 @@ const findPointInside = (perimeter, minX, maxX, minY, maxY) => {
 };
 
 export const mergeProps = ({
-  visible, perimeter, minX, maxX, minY, maxY,
+  visible, crashed, perimeter, minX, maxX, minY, maxY,
 }, { joinGame }) => ({
   visible,
+  crashed,
   onSubmit: name => joinGame(name, ...(findPointInside(perimeter, minX, maxX, minY, maxY))),
 });
 
-export default connect(select, dispatchers)(PlayerStart);
+export default connect(select, dispatchers, mergeProps)(PlayerStart);

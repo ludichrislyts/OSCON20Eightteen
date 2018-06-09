@@ -13,6 +13,13 @@ export const directions = {
   RIGHT: [1, 0],
 };
 
+export const keyCodes = {
+  UP: 38,
+  DOWN: 40,
+  LEFT: 37,
+  RIGHT: 39,
+};
+
 export const playerStates = {
   STARTING: 'STARTING',
   PLAYING: 'PLAYING',

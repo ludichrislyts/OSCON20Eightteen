@@ -64,7 +64,7 @@ const joeLeft = {
 
 const time = {
   type: TIME,
-  data: SECOND,
+  data: SECOND / 10,
 };
 
 const jumpStart = {
@@ -163,7 +163,7 @@ describe('reducers/index', () => {
   describe(TIME, () => {
     it('should increase the timer', () => {
       const state = reduce(initialState, time);
-      expect(state.time).toBe(SECOND);
+      expect(state.time).toBe(SECOND / 10);
     });
 
     it('should not move players before their time', () => {
