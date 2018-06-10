@@ -19,7 +19,7 @@ const socket = new WebSocket('ws://localhost:8080');
 const {
   board, player: {
     up, down, left, right,
-  }, time,
+  },
 } = actions;
 const {
   UP, DOWN, LEFT, RIGHT,
@@ -38,6 +38,8 @@ store.dispatch(board.load([
   [[150, 150], [350, 350]],
 ]));
 
+// TODO: add middleware to intercept dispatches and send to socket instead
+// TODO: append 'incoming' or something to actions from the server so the middleware skips them
 
 document.addEventListener('keydown', evt => {
   const { currentPlayer: name, players } = store.getState();
@@ -45,14 +47,10 @@ document.addEventListener('keydown', evt => {
   const player = players[name];
   if (!player || player.status === playerStates.CRASHED) return;
   switch (evt.keyCode) {
-    // case UP: store.dispatch(up(name)); break;
-    // case DOWN: store.dispatch(down(name)); break;
-    // case LEFT: store.dispatch(left(name)); break;
-    // case RIGHT: store.dispatch(right(name)); break;
-    case UP: socket.send(JSON.stringify(up(name))); break;
-    case DOWN: socket.send(JSON.stringify(down(name))); break;
-    case LEFT: socket.send(JSON.stringify(left(name))); break;
-    case RIGHT: socket.send(JSON.stringify(right(name))); break;
+    case UP: store.dispatch(up(name)); break;
+    case DOWN: store.dispatch(down(name)); break;
+    case LEFT: store.dispatch(left(name)); break;
+    case RIGHT: store.dispatch(right(name)); break;
     default: // do nothing
   }
 });
@@ -66,8 +64,6 @@ const step = current => {
   if (last) {
     // play all actions we have recieved from the socket
     readSocket();
-    // step the clock
-    store.dispatch(time(current - last));
   }
   last = current;
   requestAnimationFrame(step);

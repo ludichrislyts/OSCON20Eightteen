@@ -63,7 +63,7 @@ exports.newConnection = store => socket => {
   socket.on('close', () => {
     delete sessions[id];
     exports.broadcast({
-      type: actions.PLAYER_REMOVE,
+      type: actions.PLAYER_DISCONNECT,
       data: id,
     });
   });
