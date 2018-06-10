@@ -1,10 +1,8 @@
 export default (src, initialCount = 5) => {
-  const playing = new Set();
   const ready = new Set();
   const newInstance = () => {
     const sound = new Audio(src);
     sound.addEventListener('ended', () => {
-      playing.delete(sound);
       ready.add(sound);
     });
     return sound;
