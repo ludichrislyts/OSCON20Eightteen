@@ -5,7 +5,7 @@ export const SECOND = 1000;
 export const START_COUNTDOWN = 3 * SECOND;
 export const CRASH_LINGER = 2 * SECOND;
 const {
-  BOARD_SET, PLAYER_ADD, PLAYER_CURRENT, PLAYER_DIRECTION, TIME,
+  STATE_SET, BOARD_SET, PLAYER_ADD, PLAYER_CURRENT, PLAYER_DIRECTION, TIME,
 } = actions;
 const { STARTING, PLAYING, CRASHED } = playerStates;
 
@@ -42,6 +42,9 @@ export default (state = initialState, action) => {
   };
 
   switch (action.type) {
+    case STATE_SET: {
+      return action.data;
+    }
     case BOARD_SET: {
       const obstacles = action.data;
       const [perimeter] = obstacles;
@@ -84,14 +87,14 @@ export default (state = initialState, action) => {
       const playerList = Object.keys(players);
       const playerPaths = playerList.map(name => players[name].path);
       const obstacles = state.obstacles.concat(playerPaths);
-      const playerPathHeads = playerList.filter(name => players[name].status !== STARTING).map((name) => {
+      const playerPathHeads = playerList.filter(name => players[name].status !== STARTING).map(name => {
         const { x, y, path } = players[name];
         const lastPoint = path[path.length - 1];
         return [lastPoint, [x, y], name];
       });
       const newPlayers = {};
       let somePlayersChanged = false;
-      playerList.forEach((name) => {
+      playerList.forEach(name => {
         const player = players[name];
         const newPlayer = { ...player };
         switch (player.status) {
@@ -112,7 +115,7 @@ export default (state = initialState, action) => {
             // check for collisions with paths and obstacles
             const p1 = [player.x, player.y];
             const p2 = [newPlayer.x, newPlayer.y];
-            obstacles.some((obstacle) => {
+            obstacles.some(obstacle => {
               if (segmentIntersectsPolyline(p1, p2, obstacle)) {
                 newPlayer.status = CRASHED;
                 newPlayer.crashTime = time;

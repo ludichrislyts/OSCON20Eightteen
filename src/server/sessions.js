@@ -1,55 +1,76 @@
 /* eslint-env: node */
 const commands = require('../utils/socketCommands');
-const pacemaker = require('./pacemaker');
+const { actions } = require('../utils/constants');
 
 const sessions = {};
-let queue = [];
 
-exports.newConnection = socket => {
-  let id = null;
-  socket.on('message', message => {
-    const { type, data } = JSON.parse(message);
-    if (type === commands.INIT) {
-      id = data;
-      sessions[id] = socket;
-      console.log('Initialized:', id);
-      // this call is item potent
-      pacemaker.subscribe(exports.handleTick);
-    } else if (type === commands.ACTION) {
-      if (!id) return;
-      queue.push({ id, ...data });
-    }
-  });
-
-  socket.on('close', () => {
-    if (!id) return;
-    delete sessions[id];
-    queue.push({ id, type: commands.CLOSE, data: null });
-  });
-
+exports.sendAction = socket => action => {
   socket.send(JSON.stringify({
-    type: commands.INIT,
-    data: { success: true },
+    type: commands.ACTION,
+    data: action,
   }));
 };
 
-exports.handleTick = time => {
-  queue.push({ type: commands.ACTION, data: { type: 'TICK', data: time } });
-  const players = Object.keys(sessions);
-  console.log({ queue, players });
-  if (!players.length) {
-    pacemaker.unsubscribe(exports.handleTick);
-    queue = [];
-    return;
-  }
-
-  players.forEach(id => {
+exports.broadcast = action => {
+  Object.keys(sessions).forEach(id => {
     const socket = sessions[id];
     try {
-      socket.send(...queue.map(JSON.stringify));
+      exports.sendAction(socket)({
+        type: commands.ACTION,
+        data: action,
+      });
     } catch (err) {
       console.error('ERR: Failed to send');
     }
   });
-  queue = [];
+};
+
+exports.nameAvailable = name => Object.keys(sessions).every(id => sessions[id].name !== name);
+
+exports.newConnection = store => socket => {
+  const id = Date.now();
+  const sendAction = exports.sendAction(socket);
+  socket.on('message', message => {
+    const { type, data: action } = JSON.parse(message);
+    if (type === commands.ACTION) {
+      if (action.type === actions.PLAYER_ADD) {
+        if (exports.nameAvailable(action.data)) {
+          // eslint-disable-next-line no-param-reassign
+          socket.name = action.data;
+        } else {
+          sendAction({
+            type: actions.PLAYER_ADD_ERR,
+            data: null,
+          });
+          return;
+        }
+      }
+
+      // reduce on our local store
+      store.dispatch(action);
+      // broadcast to all other sessions
+      exports.broadcast(action);
+
+      if (action.type === actions.PLAYER_ADD) {
+        sendAction({
+          type: actions.PLAYER_CURRENT,
+          data: null,
+        });
+      }
+    }
+  });
+
+  socket.on('close', () => {
+    delete sessions[id];
+    exports.broadcast({
+      type: actions.PLAYER_REMOVE,
+      data: id,
+    });
+  });
+
+  // Welcome to the party, here is the current state
+  socket.send(JSON.stringify({
+    type: commands.INIT,
+    data: store.getState(),
+  }));
 };

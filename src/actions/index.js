@@ -10,7 +10,7 @@ const {
 } = directions;
 
 const board = {
-  load: (data) => {
+  load: data => {
     if (!Array.isArray(data)) throw Error(`board received must be an array. Received${typeof data}`);
     if (!data.every(Array.isArray)) throw Error('board received must be an array of arrays.');
     if (!data.every(p => p.every(Array.isArray))) throw Error('board received must be an array of arrays of arrays');
@@ -43,7 +43,7 @@ const player = {
   right: name => ({ type: PLAYER_DIRECTION, data: { name, direction: RIGHT } }),
 };
 
-const time = (amount) => {
+const time = amount => {
   const data = Number(amount);
   if (!Number.isFinite(data)) throw Error(`amount should be a number. Received ${amount}`);
   if (!data) throw Error(`amount must exist and be non-zero. Received ${amount}`);

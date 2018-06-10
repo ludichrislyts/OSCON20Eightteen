@@ -3,29 +3,32 @@ import { actions } from './constants';
 import { board } from '../actions/index';
 // import { dumpActionQueue } from './socketActionReporter';
 
+const actionQueue = [];
+
 export default function configureSocket(socket, store) {
   socket.addEventListener('open', () => {
-    socket.send(JSON.stringify({
-      type: commands.INIT,
-      data: 'Ma name!',
-    }));
+    console.log('Socket connected...');
   });
 
   socket.addEventListener('message', event => {
     const { type, data } = JSON.parse(event.data);
     if (type === commands.INIT) {
-      console.log('Initialized:', data);
+      store.dispatch({ type: actions.SET_STATE, data });
+      console.log('Initialized:', action);
     } else if (type === commands.ACTION) {
-      console.log(data);
-      store.dispatch(data);
+      actionQueue.push(data);
     }
   });
 
-  // socket.on(commands.READY, () => {
-  //   dumpActionQueue(socket);
-  // });
-
   window.onbeforeunload = () => {
     socket.close();
+  };
+
+  // return a function that flushes the read head
+  return () => {
+    actionQueue.forEach(action => {
+      store.dispatch(action);
+    });
+    actionQueue = [];
   };
 }

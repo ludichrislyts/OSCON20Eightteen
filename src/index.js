@@ -31,7 +31,7 @@ const store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
 );
 
-configureSocket(socket, store);
+const readSocket = configureSocket(socket, store);
 
 store.dispatch(board.load([
   [[0, 0], [500, 0], [500, 500], [0, 500], [0, 0]],
@@ -45,20 +45,30 @@ document.addEventListener('keydown', evt => {
   const player = players[name];
   if (!player || player.status === playerStates.CRASHED) return;
   switch (evt.keyCode) {
-    case UP: store.dispatch(up(name)); break;
-    case DOWN: store.dispatch(down(name)); break;
-    case LEFT: store.dispatch(left(name)); break;
-    case RIGHT: store.dispatch(right(name)); break;
+    // case UP: store.dispatch(up(name)); break;
+    // case DOWN: store.dispatch(down(name)); break;
+    // case LEFT: store.dispatch(left(name)); break;
+    // case RIGHT: store.dispatch(right(name)); break;
+    case UP: socket.send(JSON.stringify(up(name))); break;
+    case DOWN: socket.send(JSON.stringify(down(name))); break;
+    case LEFT: socket.send(JSON.stringify(left(name))); break;
+    case RIGHT: socket.send(JSON.stringify(right(name))); break;
     default: // do nothing
   }
 });
 
+// sound effect hooks
 currentPlayerDirection(store);
 currentPlayerStatus(store);
 
 let last;
 const step = current => {
-  if (last) store.dispatch(time(current - last));
+  if (last) {
+    // play all actions we have recieved from the socket
+    readSocket();
+    // step the clock
+    store.dispatch(time(current - last));
+  }
   last = current;
   requestAnimationFrame(step);
 };
