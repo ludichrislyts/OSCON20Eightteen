@@ -12,6 +12,9 @@ import actions from './actions';
 import { keyCodes, playerStates } from './utils/constants';
 import currentPlayerDirection from './subscribers/currentPlayerDirection';
 import currentPlayerStatus from './subscribers/currentPlayerStatus';
+import configureSocket from './utils/configureSocket';
+
+const socket = new WebSocket('ws://localhost:8080');
 
 const {
   board, player: {
@@ -28,13 +31,15 @@ const store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
 );
 
+configureSocket(socket, store);
+
 store.dispatch(board.load([
   [[0, 0], [500, 0], [500, 500], [0, 500], [0, 0]],
   [[150, 150], [350, 350]],
 ]));
 
 
-document.addEventListener('keydown', (evt) => {
+document.addEventListener('keydown', evt => {
   const { currentPlayer: name, players } = store.getState();
   if (!name) return;
   const player = players[name];
@@ -52,7 +57,7 @@ currentPlayerDirection(store);
 currentPlayerStatus(store);
 
 let last;
-const step = (current) => {
+const step = current => {
   if (last) store.dispatch(time(current - last));
   last = current;
   requestAnimationFrame(step);
