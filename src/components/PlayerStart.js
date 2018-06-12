@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import React from 'react';
 import PropTypes from 'prop-types';
 import actions from '../actions';
-import { pointIsInPolygon } from '../utils/calc';
-import { playerStates } from '../utils/constants';
+import { pointIsInPolygon } from '../utils/calc.mjs';
+import { playerStates } from '../utils/constants.mjs';
 
 export const PlayerStart = ({ visible = false, crashed = false, onSubmit }) => {
   const textInput = React.createRef();
-  const submit = (evt) => {
+  const submit = evt => {
     evt.preventDefault();
     const name = textInput.current.value;
     if (name) onSubmit(textInput.current.value);
@@ -30,7 +30,7 @@ PlayerStart.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 
-export const select = (state) => {
+export const select = state => {
   const {
     currentPlayer, obstacles, minX, maxX, minY, maxY,
   } = state;

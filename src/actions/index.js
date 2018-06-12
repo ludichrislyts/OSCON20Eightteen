@@ -1,5 +1,5 @@
-import { actions, directions } from '../utils/constants';
-import { isClosed } from '../utils/calc';
+import { actions, directions } from '../utils/constants.mjs';
+import { isClosed } from '../utils/calc.mjs';
 
 const {
   BOARD_SET, PLAYER_ADD, PLAYER_DIRECTION, PLAYER_CURRENT, TIME,

@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Polyline from './Polyline';
-import { directions } from '../utils/constants';
+import { directions } from '../utils/constants.mjs';
 import './Player.css';
 
 const {

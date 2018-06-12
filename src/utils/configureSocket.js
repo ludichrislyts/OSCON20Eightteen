@@ -1,9 +1,8 @@
-import commands from './socketCommands';
-import { actions } from './constants';
-import { board } from '../actions/index';
+import commands from './socketCommands.mjs';
+import { actions } from './constants.mjs';
 // import { dumpActionQueue } from './socketActionReporter';
 
-const actionQueue = [];
+let actionQueue = [];
 
 export default function configureSocket(socket, store) {
   socket.addEventListener('open', () => {
@@ -12,11 +11,13 @@ export default function configureSocket(socket, store) {
 
   socket.addEventListener('message', event => {
     const { type, data } = JSON.parse(event.data);
+    console.log({ event: event.data, type, data });
     if (type === commands.INIT) {
-      store.dispatch({ type: actions.SET_STATE, data });
-      console.log('Initialized:', action);
+      store.dispatch({ type: actions.SET_STATE, data, incoming: true });
+      console.log('Initialized:', data);
     } else if (type === commands.ACTION) {
-      actionQueue.push(data);
+      console.log('received action:', data);
+      actionQueue.push({ ...data, incoming: true });
     }
   });
 

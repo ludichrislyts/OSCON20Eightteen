@@ -1,6 +1,4 @@
-/* eslint-env node */
-
-module.exports = {
+export default {
   INIT: 'INIT',
   ACTION: 'ACTION',
   CLOSE: 'CLOSE',

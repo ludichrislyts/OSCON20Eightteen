@@ -1,21 +1,21 @@
 /* eslint-env: node */
-const commands = require('../utils/socketCommands');
-const { actions } = require('../utils/constants');
+import commands from '../utils/socketCommands.mjs';
+import { actions } from '../utils/constants.mjs';
 
 const sessions = {};
 
-exports.sendAction = socket => action => {
+export const sendAction = socket => action => {
   socket.send(JSON.stringify({
     type: commands.ACTION,
     data: action,
   }));
 };
 
-exports.broadcast = action => {
+export const broadcast = action => {
   Object.keys(sessions).forEach(id => {
     const socket = sessions[id];
     try {
-      exports.sendAction(socket)({
+      sendAction(socket)({
         type: commands.ACTION,
         data: action,
       });
@@ -25,20 +25,20 @@ exports.broadcast = action => {
   });
 };
 
-exports.nameAvailable = name => Object.keys(sessions).every(id => sessions[id].name !== name);
+export const nameAvailable = name => Object.keys(sessions).every(id => sessions[id].name !== name);
 
-exports.newConnection = store => socket => {
+export const newConnection = store => socket => {
   const id = Date.now();
-  const sendAction = exports.sendAction(socket);
+  const send = sendAction(socket);
   socket.on('message', message => {
     const { type, data: action } = JSON.parse(message);
     if (type === commands.ACTION) {
       if (action.type === actions.PLAYER_ADD) {
-        if (exports.nameAvailable(action.data)) {
+        if (nameAvailable(action.data)) {
           // eslint-disable-next-line no-param-reassign
           socket.name = action.data;
         } else {
-          sendAction({
+          send({
             type: actions.PLAYER_ADD_ERR,
             data: null,
           });
@@ -49,10 +49,10 @@ exports.newConnection = store => socket => {
       // reduce on our local store
       store.dispatch(action);
       // broadcast to all other sessions
-      exports.broadcast(action);
+      broadcast(action);
 
       if (action.type === actions.PLAYER_ADD) {
-        sendAction({
+        send({
           type: actions.PLAYER_CURRENT,
           data: null,
         });
@@ -62,7 +62,7 @@ exports.newConnection = store => socket => {
 
   socket.on('close', () => {
     delete sessions[id];
-    exports.broadcast({
+    broadcast({
       type: actions.PLAYER_DISCONNECT,
       data: id,
     });

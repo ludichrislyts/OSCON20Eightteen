@@ -4,15 +4,16 @@ import registerServiceWorker from './registerServiceWorker';
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 
 import App from './components/App';
-import reducer from './reducers';
+import reducer from './reducers/index.mjs';
 import actions from './actions';
-import { keyCodes, playerStates } from './utils/constants';
+import { keyCodes, playerStates } from './utils/constants.mjs';
 import currentPlayerDirection from './subscribers/currentPlayerDirection';
 import currentPlayerStatus from './subscribers/currentPlayerStatus';
 import configureSocket from './utils/configureSocket';
+import socketActionMiddleware from './utils/socketActionReporter';
 
 const socket = new WebSocket('ws://localhost:8080');
 
@@ -26,7 +27,7 @@ const {
 } = keyCodes;
 
 const store = createStore(
-  reducer,
+  reducer, reducer(), applyMiddleware(socketActionMiddleware(socket)),
   // eslint-disable-next-line no-underscore-dangle
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
 );
