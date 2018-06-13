@@ -4,7 +4,7 @@ import registerServiceWorker from './registerServiceWorker';
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 
 import App from './components/App';
 import reducer from './reducers/index.mjs';
@@ -15,7 +15,8 @@ import currentPlayerStatus from './subscribers/currentPlayerStatus';
 import configureSocket from './utils/configureSocket';
 import socketActionMiddleware from './utils/socketActionReporter';
 
-const socket = new WebSocket('ws://localhost:8080');
+const { hostname } = window.location;
+const socket = new WebSocket(`ws://${hostname}:8080`);
 
 const {
   player: {
@@ -27,11 +28,9 @@ const {
   UP, DOWN, LEFT, RIGHT,
 } = keyCodes;
 
-const store = createStore(
-  reducer, reducer(), applyMiddleware(socketActionMiddleware(socket)),
-  // eslint-disable-next-line no-underscore-dangle
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-);
+// eslint-disable-next-line no-underscore-dangle
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(reducer, composeEnhancers(applyMiddleware(socketActionMiddleware(socket))));
 
 const readSocket = configureSocket(socket, store);
 

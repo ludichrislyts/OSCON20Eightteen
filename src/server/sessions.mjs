@@ -2,6 +2,10 @@
 import commands from '../utils/socketCommands.mjs';
 import { actions } from '../utils/constants.mjs';
 
+const {
+  STATE_SET, PLAYER_ADD, PLAYER_ADD_ERR, PLAYER_CURRENT, PLAYER_DISCONNECT,
+} = actions;
+
 const sessions = {};
 
 export const sendAction = socket => action => {
@@ -15,10 +19,7 @@ export const broadcast = action => {
   Object.keys(sessions).forEach(id => {
     const socket = sessions[id];
     try {
-      sendAction(socket)({
-        type: commands.ACTION,
-        data: action,
-      });
+      sendAction(socket)(action);
     } catch (err) {
       console.error('ERR: Failed to send');
     }
@@ -29,18 +30,26 @@ export const nameAvailable = name => Object.keys(sessions).every(id => sessions[
 
 export const newConnection = store => socket => {
   const id = Date.now();
+  sessions[id] = socket;
   const send = sendAction(socket);
   socket.on('message', message => {
     const { type, data: action } = JSON.parse(message);
+
+    // Wait right there... Before we reduce this, we need to
+    // make sure the name provided is available. If not, send out an error.
     if (type === commands.ACTION) {
-      if (action.type === actions.PLAYER_ADD) {
+      if (action.type === PLAYER_ADD) {
         if (nameAvailable(action.data)) {
           // eslint-disable-next-line no-param-reassign
           socket.name = action.data;
+          send({
+            type: PLAYER_CURRENT,
+            data: action.data.name,
+          });
         } else {
           send({
-            type: actions.PLAYER_ADD_ERR,
-            data: null,
+            type: PLAYER_ADD_ERR,
+            data: action.data.name,
           });
           return;
         }
@@ -50,20 +59,13 @@ export const newConnection = store => socket => {
       store.dispatch(action);
       // broadcast to all other sessions
       broadcast(action);
-
-      if (action.type === actions.PLAYER_ADD) {
-        send({
-          type: actions.PLAYER_CURRENT,
-          data: null,
-        });
-      }
     }
   });
 
   socket.on('close', () => {
     delete sessions[id];
     broadcast({
-      type: actions.PLAYER_DISCONNECT,
+      type: PLAYER_DISCONNECT,
       data: id,
     });
   });
@@ -71,6 +73,9 @@ export const newConnection = store => socket => {
   // Welcome to the party, here is the current state
   socket.send(JSON.stringify({
     type: commands.INIT,
-    data: store.getState(),
+    data: {
+      type: STATE_SET,
+      data: store.getState(),
+    },
   }));
 };

@@ -1,5 +1,4 @@
 import commands from './socketCommands.mjs';
-import { actions } from './constants.mjs';
 // import { dumpActionQueue } from './socketActionReporter';
 
 let actionQueue = [];
@@ -14,7 +13,7 @@ export default function configureSocket(socket, store) {
     // console.log({ event: event.data, type, data });
     if (type === commands.INIT) {
       // console.log('actions available', actions);
-      store.dispatch({ type: actions.STATE_SET, data, incoming: true });
+      store.dispatch({ ...data, incoming: true });
       // console.log('Initialized:', data);
     } else if (type === commands.ACTION) {
       // console.log('received action:', data);
