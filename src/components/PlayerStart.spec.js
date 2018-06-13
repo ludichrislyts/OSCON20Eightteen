@@ -2,9 +2,9 @@
 import React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { PlayerStart, select, dispatchers, mergeProps } from './PlayerStart';
-import reducer from '../reducers';
-import actions from '../actions';
-import { actions as actionTypes } from '../utils/constants';
+import reducer from '../reducers/index.mjs';
+import actions from '../actions/index.mjs';
+import { actions as actionTypes } from '../utils/constants.mjs';
 
 const { PLAYER_ADD, PLAYER_CURRENT } = actionTypes;
 const perimeter = [[0, 0], [100, 0], [100, 100], [0, 100], [0, 0]];
@@ -20,7 +20,7 @@ describe('PlayerStart', () => {
       unmountComponentAtNode(node);
     });
 
-    const make = (child) => {
+    const make = child => {
       render(child, node);
       return node.firstChild;
     };

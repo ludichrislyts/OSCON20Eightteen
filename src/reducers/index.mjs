@@ -13,6 +13,10 @@ export const initialState = {
   time: 0,
   players: {},
   obstacles: [],
+  minX: 0,
+  maxX: 10,
+  minY: 0,
+  maxY: 10,
 };
 
 const initializePlayer = (x, y, currentTime) => ({
@@ -45,6 +49,7 @@ export default (state = initialState, action) => {
     case STATE_SET: {
       return action.data;
     }
+
     case BOARD_SET: {
       const obstacles = action.data;
       const [perimeter] = obstacles;

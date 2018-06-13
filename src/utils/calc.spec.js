@@ -4,7 +4,7 @@ import {
   polylinesIntersect,
   pointIsInPolygon,
   isClosed,
-} from './calc';
+} from './calc.mjs';
 
 describe('calc', () => {
   describe('segmentsIntersect()', () => {

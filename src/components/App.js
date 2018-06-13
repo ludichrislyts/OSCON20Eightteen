@@ -7,7 +7,7 @@ import Players from './Players';
 import PlayerStart from './PlayerStart';
 
 export const App = ({
-  minX = 0, minY = 0, width = 100, height = 100, isPlaying, x, y,
+  minX = 0, minY = 0, width = 100, height = 100, // isPlaying, x, y,
 }) => (
   <div>
     <svg
@@ -30,7 +30,6 @@ App.propTypes = {
 };
 
 export const select = state => {
-  console.log({ state });
   const {
     minX, minY, maxX, maxY, currentPlayer,
   } = state;

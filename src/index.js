@@ -8,7 +8,7 @@ import { createStore, applyMiddleware } from 'redux';
 
 import App from './components/App';
 import reducer from './reducers/index.mjs';
-import actions from './actions';
+import actions from './actions/index.mjs';
 import { keyCodes, playerStates } from './utils/constants.mjs';
 import currentPlayerDirection from './subscribers/currentPlayerDirection';
 import currentPlayerStatus from './subscribers/currentPlayerStatus';
@@ -18,10 +18,11 @@ import socketActionMiddleware from './utils/socketActionReporter';
 const socket = new WebSocket('ws://localhost:8080');
 
 const {
-  board, player: {
+  player: {
     up, down, left, right,
   },
 } = actions;
+
 const {
   UP, DOWN, LEFT, RIGHT,
 } = keyCodes;
@@ -33,11 +34,6 @@ const store = createStore(
 );
 
 const readSocket = configureSocket(socket, store);
-
-store.dispatch(board.load([
-  [[0, 0], [500, 0], [500, 500], [0, 500], [0, 0]],
-  [[150, 150], [350, 350]],
-]));
 
 // TODO: add middleware to intercept dispatches and send to socket instead
 // TODO: append 'incoming' or something to actions from the server so the middleware skips them

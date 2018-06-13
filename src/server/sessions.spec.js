@@ -1,6 +1,6 @@
 /* globals: expect */
 
-import sessions from './sessions.js';
+import sessions from './sessions.mjs';
 
 describe('sessions', () => {
   describe('new()', () => {

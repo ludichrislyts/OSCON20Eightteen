@@ -108,7 +108,7 @@ export const pointIsInPolygon = ([x, y], poly) => {
  * @param  {array[array[number]]}  poly array of 2d points
  * @return {Boolean}                    true if the first point of the polyline is the same as the last
  */
-export const isClosed = (poly) => {
+export const isClosed = poly => {
   const [x1, y1] = poly[0];
   const [xn, yn] = poly[poly.length - 1];
   return (x1 === xn && y1 === yn);
