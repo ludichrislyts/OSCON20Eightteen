@@ -48,14 +48,9 @@ export const select = (state, { name }) => {
   const { time } = state;
   const age = time - startTime;
   const timeToStart = age < 0 ? -Math.floor(age / 1000) : 0;
-  let angle;
-  switch (direction) {
-    case UP: angle = 0; break;
-    case DOWN: angle = 180; break;
-    case LEFT: angle = -90; break;
-    case RIGHT: angle = 90; break;
-    default: angle = 0;
-  }
+
+  const [xDir, yDir] = direction;
+  const angle = xDir ? (xDir * 90) : (1 + yDir) * 90;
   return {
     x, y, path, timeToStart, status, angle,
   };
