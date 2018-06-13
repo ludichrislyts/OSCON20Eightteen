@@ -50,7 +50,6 @@ export const select = state => {
 export const dispatchers = dispatch => ({
   joinGame: (name, x, y) => {
     dispatch(actions.player.add(name, x, y));
-    dispatch(actions.player.claim(name));
   },
 });
 
