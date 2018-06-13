@@ -1,13 +1,14 @@
 /* eslint-env: node */
-const commands = require('../utils/socketCommands');
+/* eslint no-console: 0 */
+const commands = require('../utils/socketCommands.mjs');
 const pacemaker = require('./pacemaker');
 
 const sessions = {};
 let queue = [];
 
-exports.newConnection = socket => {
+exports.newConnection = (socket) => {
   let id = null;
-  socket.on('message', message => {
+  socket.on('message', (message) => {
     const { type, data } = JSON.parse(message);
     if (type === commands.INIT) {
       id = data;
@@ -33,7 +34,7 @@ exports.newConnection = socket => {
   }));
 };
 
-exports.handleTick = time => {
+exports.handleTick = (time) => {
   queue.push({ type: commands.ACTION, data: { type: 'TICK', data: time } });
   const players = Object.keys(sessions);
   console.log({ queue, players });
@@ -43,7 +44,7 @@ exports.handleTick = time => {
     return;
   }
 
-  players.forEach(id => {
+  players.forEach((id) => {
     const socket = sessions[id];
     try {
       socket.send(...queue.map(JSON.stringify));

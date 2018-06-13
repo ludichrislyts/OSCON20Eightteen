@@ -1,4 +1,4 @@
-import actions from './index';
+import actions from './index.mjs';
 
 const { board, player, time } = actions;
 

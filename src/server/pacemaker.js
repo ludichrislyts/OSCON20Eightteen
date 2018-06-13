@@ -4,10 +4,10 @@ const subs = [];
 
 const tick = () => {
   const time = Date.now();
-  subs.forEach(sub => { sub(time); });
+  subs.forEach((sub) => { sub(time); });
 };
 
-const subscribe = sub => {
+const subscribe = (sub) => {
   if (subs.indexOf(sub) !== -1) return;
   subs.push(sub);
 
@@ -16,7 +16,7 @@ const subscribe = sub => {
 
 const getSubs = () => subs;
 
-const unsubscribe = sub => {
+const unsubscribe = (sub) => {
   if (subs.indexOf(sub) === -1) return;
   subs.splice(subs.indexOf(sub), 1);
   if (!subs.length) {
