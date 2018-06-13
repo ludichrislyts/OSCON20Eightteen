@@ -1,5 +1,5 @@
 /* eslint no-console: 0 */
-import commands from './socketCommands';
+import commands from './socketCommands.mjs';
 // import { dumpActionQueue } from './socketActionReporter';
 
 export default function configureSocket(socket, store) {

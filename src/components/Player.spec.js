@@ -2,8 +2,8 @@
 import React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { Player, select } from './Player';
-import reducer from '../reducers';
-import actions from '../actions';
+import reducer from '../reducers/index.mjs';
+import actions from '../actions/index.mjs';
 
 describe('Player', () => {
   describe('component', () => {

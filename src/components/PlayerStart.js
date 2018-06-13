@@ -2,7 +2,7 @@ import './PlayerStart.css';
 import { connect } from 'react-redux';
 import React from 'react';
 import PropTypes from 'prop-types';
-import actions from '../actions';
+import actions from '../actions/index.mjs';
 import { pointIsInPolygon } from '../utils/calc.mjs';
 import { playerStates } from '../utils/constants.mjs';
 

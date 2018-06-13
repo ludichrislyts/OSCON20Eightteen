@@ -7,8 +7,8 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 
 import App from './components/App';
-import reducer from './reducers';
-import actions from './actions';
+import reducer from './reducers/index.mjs';
+import actions from './actions/index.mjs';
 import { keyCodes, playerStates } from './utils/constants.mjs';
 import currentPlayerDirection from './subscribers/currentPlayerDirection';
 import currentPlayerStatus from './subscribers/currentPlayerStatus';

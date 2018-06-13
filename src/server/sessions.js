@@ -1,6 +1,6 @@
 /* eslint-env: node */
 /* eslint no-console: 0 */
-const commands = require('../utils/socketCommands');
+const commands = require('../utils/socketCommands.mjs');
 const pacemaker = require('./pacemaker');
 
 const sessions = {};

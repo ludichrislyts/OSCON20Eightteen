@@ -1,5 +1,5 @@
 import { actions, directions, playerStates } from '../utils/constants.mjs';
-import indexReducer, { initialState, START_COUNTDOWN } from './index';
+import indexReducer, { initialState, START_COUNTDOWN } from './index.mjs';
 import reducerFreezer from '../utils/reducerFreezer';
 import { pointIsInPolygon } from '../utils/calc.mjs';
 
