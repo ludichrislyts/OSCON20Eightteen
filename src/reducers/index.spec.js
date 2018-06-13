@@ -1,7 +1,7 @@
-import { actions, directions, playerStates } from '../utils/constants';
+import { actions, directions, playerStates } from '../utils/constants.mjs';
 import indexReducer, { initialState, START_COUNTDOWN } from './index';
 import reducerFreezer from '../utils/reducerFreezer';
-import { pointIsInPolygon } from '../utils/calc';
+import { pointIsInPolygon } from '../utils/calc.mjs';
 
 const reducer = reducerFreezer(indexReducer);
 const reduce = (state, ...actionList) => actionList.reduce(reducer, state);

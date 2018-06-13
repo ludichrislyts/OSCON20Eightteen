@@ -19,8 +19,8 @@ describe('Pacemaker', () => {
     subs = pacemaker.getSubs();
     expect(subs).toEqual([]);
   });
-  it('should call subscribers with a timestamp', done => {
-    const func = time => {
+  it('should call subscribers with a timestamp', (done) => {
+    const func = (time) => {
       expect(time).toBeTruthy();
       done();
     };

@@ -1,5 +1,5 @@
-import { actions, directions, playerStates } from '../utils/constants';
-import { segmentIntersectsPolyline, segmentsIntersect } from '../utils/calc';
+import { actions, directions, playerStates } from '../utils/constants.mjs';
+import { segmentIntersectsPolyline, segmentsIntersect } from '../utils/calc.mjs';
 
 export const SECOND = 1000;
 export const START_COUNTDOWN = 3 * SECOND;

@@ -9,7 +9,7 @@ import { createStore } from 'redux';
 import App from './components/App';
 import reducer from './reducers';
 import actions from './actions';
-import { keyCodes, playerStates } from './utils/constants';
+import { keyCodes, playerStates } from './utils/constants.mjs';
 import currentPlayerDirection from './subscribers/currentPlayerDirection';
 import currentPlayerStatus from './subscribers/currentPlayerStatus';
 import configureSocket from './utils/configureSocket';
@@ -38,8 +38,7 @@ store.dispatch(board.load([
   [[150, 150], [350, 350]],
 ]));
 
-
-document.addEventListener('keydown', evt => {
+document.addEventListener('keydown', (evt) => {
   const { currentPlayer: name, players } = store.getState();
   if (!name) return;
   const player = players[name];
@@ -57,7 +56,7 @@ currentPlayerDirection(store);
 currentPlayerStatus(store);
 
 let last;
-const step = current => {
+const step = (current) => {
   if (last) store.dispatch(time(current - last));
   last = current;
   requestAnimationFrame(step);

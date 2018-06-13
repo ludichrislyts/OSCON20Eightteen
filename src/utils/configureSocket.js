@@ -1,6 +1,5 @@
+/* eslint no-console: 0 */
 import commands from './socketCommands';
-import { actions } from './constants';
-import { board } from '../actions/index';
 // import { dumpActionQueue } from './socketActionReporter';
 
 export default function configureSocket(socket, store) {
@@ -11,7 +10,7 @@ export default function configureSocket(socket, store) {
     }));
   });
 
-  socket.addEventListener('message', event => {
+  socket.addEventListener('message', (event) => {
     const { type, data } = JSON.parse(event.data);
     if (type === commands.INIT) {
       console.log('Initialized:', data);

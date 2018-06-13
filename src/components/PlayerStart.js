@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import React from 'react';
 import PropTypes from 'prop-types';
 import actions from '../actions';
-import { pointIsInPolygon } from '../utils/calc';
-import { playerStates } from '../utils/constants';
+import { pointIsInPolygon } from '../utils/calc.mjs';
+import { playerStates } from '../utils/constants.mjs';
 
 export const PlayerStart = ({ visible = false, crashed = false, onSubmit }) => {
   const textInput = React.createRef();
