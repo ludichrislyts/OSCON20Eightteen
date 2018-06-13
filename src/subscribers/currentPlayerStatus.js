@@ -5,7 +5,7 @@ import { playerStates } from '../utils/constants.mjs';
 const crash = soundEffect('crash1.wav', 1);
 const starting = soundEffect('countdown1.wav', 1);
 
-const select = state => {
+const select = (state) => {
   const { currentPlayer, players } = state;
   if (!currentPlayer) return null;
   const player = players[currentPlayer];
@@ -13,7 +13,7 @@ const select = state => {
   return player.status;
 };
 
-const onChange = status => {
+const onChange = (status) => {
   if (status === playerStates.CRASHED) crash();
   if (status === playerStates.STARTING) starting();
 };

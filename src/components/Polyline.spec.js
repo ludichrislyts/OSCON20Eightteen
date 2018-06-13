@@ -12,7 +12,7 @@ describe('Polyline', () => {
     unmountComponentAtNode(node);
   });
 
-  const make = child => {
+  const make = (child) => {
     render(child, node);
     return node.firstChild;
   };

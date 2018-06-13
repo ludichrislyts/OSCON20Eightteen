@@ -4,7 +4,7 @@ import { playerStates } from '../utils/constants.mjs';
 
 const sound = soundEffect('turn1.wav');
 
-const select = state => {
+const select = (state) => {
   const { currentPlayer, players } = state;
   if (!currentPlayer) return null;
   const player = players[currentPlayer];

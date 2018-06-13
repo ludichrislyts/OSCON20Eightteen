@@ -29,7 +29,7 @@ App.propTypes = {
   height: PropTypes.number,
 };
 
-export const select = state => {
+export const select = (state) => {
   const {
     minX, minY, maxX, maxY, currentPlayer,
   } = state;

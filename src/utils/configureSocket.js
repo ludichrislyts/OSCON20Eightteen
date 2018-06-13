@@ -8,7 +8,7 @@ export default function configureSocket(socket, store) {
     // console.log('Socket connected...');
   });
 
-  socket.addEventListener('message', event => {
+  socket.addEventListener('message', (event) => {
     const { type, data } = JSON.parse(event.data);
     // console.log({ event: event.data, type, data });
     if (type === commands.INIT) {
@@ -27,7 +27,7 @@ export default function configureSocket(socket, store) {
 
   // return a function that flushes the read head
   return () => {
-    actionQueue.forEach(action => {
+    actionQueue.forEach((action) => {
       store.dispatch(action);
     });
     actionQueue = [];

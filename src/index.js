@@ -37,7 +37,7 @@ const readSocket = configureSocket(socket, store);
 // TODO: add middleware to intercept dispatches and send to socket instead
 // TODO: append 'incoming' or something to actions from the server so the middleware skips them
 
-document.addEventListener('keydown', evt => {
+document.addEventListener('keydown', (evt) => {
   const { currentPlayer: name, players } = store.getState();
   if (!name) return;
   const player = players[name];
@@ -56,7 +56,7 @@ currentPlayerDirection(store);
 currentPlayerStatus(store);
 
 let last;
-const step = current => {
+const step = (current) => {
   if (last) {
     // play all actions we have recieved from the socket
     readSocket();
