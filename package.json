@@ -21,15 +21,10 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "buble": "^0.19.3",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-jest": "^21.15.0",
     "eslint-plugin-react": "^7.7.0",
-    "nodemon": "^1.17.5",
-    "rollup-plugin-babel": "^3.0.4",
-    "rollup-plugin-buble": "^0.19.2"
+    "nodemon": "^1.17.5"
   }
 }
