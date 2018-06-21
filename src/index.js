@@ -9,7 +9,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import App from './components/App';
 import reducer from './reducers/index.mjs';
 import actions from './actions/index.mjs';
-import { keyCodes, playerStates } from './utils/constants.mjs';
+import { keyCodes, playerStates, actions as actionTypes } from './utils/constants.mjs';
 import currentPlayerDirection from './subscribers/currentPlayerDirection';
 import currentPlayerStatus from './subscribers/currentPlayerStatus';
 import configureSocket from './utils/configureSocket';
@@ -34,21 +34,21 @@ const store = createStore(reducer, composeEnhancers(applyMiddleware(socketAction
 
 const readSocket = configureSocket(socket, store);
 
-// TODO: add middleware to intercept dispatches and send to socket instead
-// TODO: append 'incoming' or something to actions from the server so the middleware skips them
-
 document.addEventListener('keydown', (evt) => {
   const { currentPlayer: name, players } = store.getState();
   if (!name) return;
   const player = players[name];
   if (!player || player.status === playerStates.CRASHED) return;
+  let prevent = true;
   switch (evt.keyCode) {
     case UP: store.dispatch(up(name)); break;
     case DOWN: store.dispatch(down(name)); break;
     case LEFT: store.dispatch(left(name)); break;
     case RIGHT: store.dispatch(right(name)); break;
-    default: // do nothing
+    default:
+      prevent = false;
   }
+  if (prevent) evt.preventDefault();
 });
 
 // sound effect hooks
@@ -65,6 +65,12 @@ const step = (current) => {
   requestAnimationFrame(step);
 };
 requestAnimationFrame(step);
+
+window.watch = name => store.dispatch({
+  type: actionTypes.PLAYER_CURRENT,
+  data: name,
+  incoming: true,
+});
 
 render(
   <Provider store={store}><App /></Provider>,

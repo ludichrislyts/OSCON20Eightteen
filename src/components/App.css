@@ -1,4 +1,5 @@
 svg {
   padding: 20px;
   max-height: 98vh;
+  will-change: tranform;
 }

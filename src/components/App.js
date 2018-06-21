@@ -7,37 +7,60 @@ import Players from './Players';
 import PlayerStart from './PlayerStart';
 
 export const App = ({
-  minX = 0, minY = 0, width = 100, height = 100, // isPlaying, x, y,
-}) => (
-  <div>
-    <svg
-      width="100%"
-      viewBox={`${minX} ${minY} ${width} ${height}`}
-      // style={isPlaying ? { transform: `matrix(1, 0, 0, 1, ${width / 2 - x}, ${height / 2 - y})` } : null}
-    >
-      <Board />
-      <Players />
-    </svg>
-    <PlayerStart />
-  </div>
-);
+  minX = 0, minY = 0, width = 100, height = 100, x, y, zoomFactor,
+}) => {
+  const { innerWidth: stageWidth, innerHeight: stageHeight } = window;
+  const size = (stageWidth > stageHeight) ? stageHeight : stageWidth;
+  const transformX = (0.5 - (x / width)) * size * 2.8 * zoomFactor;
+  const transformY = (0.5 - (y / height)) * size * 2.8 * zoomFactor;
+  const zoom = 1 + (2 * zoomFactor);
+  return (
+    <div>
+      <svg
+        width="100%"
+        viewBox={`${minX} ${minY} ${width} ${height}`}
+        style={zoomFactor ? { transform: `matrix(${zoom}, 0, 0, ${zoom}, ${transformX}, ${transformY})` } : null}
+      >
+        <Board />
+        <Players />
+      </svg>
+      <PlayerStart />
+    </div>
+  );
+};
 
 App.propTypes = {
   minY: PropTypes.number,
   minX: PropTypes.number,
   width: PropTypes.number,
   height: PropTypes.number,
+  x: PropTypes.number,
+  y: PropTypes.number,
+  zoomFactor: PropTypes.number,
 };
 
 export const select = (state) => {
   const {
-    minX, minY, maxX, maxY, currentPlayer,
+    minX, minY, maxX, maxY, currentPlayer, time,
   } = state;
   const player = state.players[currentPlayer];
-  const { x, y } = player || { x: 0, y: 0 };
-  const isPlaying = player && player.status !== 'CRASHED';
+  const {
+    x, y, startTime, crashTime, status,
+  } = player || { x: 0, y: 0 };
+
+  const age = time - startTime;
+  const crashAge = crashTime - time;
+  let zoomFactor = 0;
+  if (status === 'PLAYING') {
+    zoomFactor = 1;
+  } else if (age < 0) {
+    zoomFactor = (3000 + age) / 3000;
+  } else if (status === 'CRASHED') {
+    zoomFactor = (2000 + crashAge) / 2000;
+  }
+
   return {
-    minX, minY, width: maxX - minX, height: maxY - minY, x, y, isPlaying,
+    minX, minY, width: maxX - minX, height: maxY - minY, x, y, zoomFactor,
   };
 };
 

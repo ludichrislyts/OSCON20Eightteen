@@ -1,9 +1,9 @@
 const OBJECT = {};
 let state = OBJECT;
 
-export default reducer => {
+export default (reducer) => {
   state = reducer();
-  const dispatch = action => {
+  const dispatch = (action) => {
     state = reducer(state, action);
   };
   const getState = () => state;
