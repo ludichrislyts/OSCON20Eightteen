@@ -5,7 +5,7 @@ export const SECOND = 1000;
 export const START_COUNTDOWN = 3 * SECOND;
 export const CRASH_LINGER = 2 * SECOND;
 const {
-  BOARD_SET, PLAYER_ADD, PLAYER_CURRENT, PLAYER_DIRECTION, TIME,
+  STATE_SET, BOARD_SET, PLAYER_ADD, PLAYER_CURRENT, PLAYER_DIRECTION, TIME,
 } = actions;
 const { STARTING, PLAYING, CRASHED } = playerStates;
 
@@ -13,7 +13,22 @@ export const initialState = {
   time: 0,
   players: {},
   obstacles: [],
+  colors: {
+    orange: 0,
+    cyan: 0,
+    green: 0,
+    yellow: 0,
+  },
+  minX: 0,
+  maxX: 10,
+  minY: 0,
+  maxY: 10,
 };
+
+export const leastUsedColor = colors => Object.keys(colors).reduce(
+  (least, current) => (colors[least] < colors[current] ? least : current),
+  'ugly',
+);
 
 const initializePlayer = (x, y, currentTime) => ({
   x,
@@ -35,13 +50,22 @@ const getNextDirection = (next, prev) => {
 
 export default (state = initialState, action) => {
   if (!action) return state;
-  const updatePlayer = (name, patch) => {
+  const updatePlayer = (name, patch, color) => {
     const { players } = state;
-    const player = players[name];
-    return { ...state, players: { ...players, [name]: { ...player, ...patch } } };
+    const player = { ...players[name], ...patch };
+    let { colors } = state;
+    if (color) {
+      player.color = color;
+      colors = { ...colors, [color]: colors[color] + 1 };
+    }
+    return { ...state, colors, players: { ...players, [name]: player } };
   };
 
   switch (action.type) {
+    case STATE_SET: {
+      return action.data;
+    }
+
     case BOARD_SET: {
       const obstacles = action.data;
       const [perimeter] = obstacles;
@@ -61,7 +85,7 @@ export default (state = initialState, action) => {
       // Ignore adding players with a name that already exists on the board
       const current = state.players[name];
       if (current && current.status !== CRASHED) return state;
-      return updatePlayer(name, initializePlayer(x, y, state.time));
+      return updatePlayer(name, initializePlayer(x, y, state.time), leastUsedColor(state.colors));
     }
 
     case PLAYER_CURRENT: {
@@ -90,6 +114,7 @@ export default (state = initialState, action) => {
         return [lastPoint, [x, y], name];
       });
       const newPlayers = {};
+      const colors = { ...state.colors };
       let somePlayersChanged = false;
       playerList.forEach((name) => {
         const player = players[name];
@@ -141,8 +166,13 @@ export default (state = initialState, action) => {
           }
 
           case CRASHED: {
-            if (time - player.crashTime < CRASH_LINGER) newPlayers[name] = player;
-            else somePlayersChanged = true;
+            if (time - player.crashTime < CRASH_LINGER) {
+              newPlayers[name] = player;
+            } else {
+              // Don't add the player to the newPlayers, essentially deleting them
+              colors[player.color] -= 1;
+              somePlayersChanged = true;
+            }
             break;
           }
 
@@ -150,7 +180,12 @@ export default (state = initialState, action) => {
             newPlayers[name] = player;
         }
       });
-      return { ...state, time, players: somePlayersChanged ? newPlayers : players };
+      if (somePlayersChanged) {
+        return {
+          ...state, time, players: newPlayers, colors,
+        };
+      }
+      return { ...state, time };
     }
 
     default:

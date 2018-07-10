@@ -1,30 +1,35 @@
-/* eslint no-console: 0 */
 import commands from './socketCommands.mjs';
 // import { dumpActionQueue } from './socketActionReporter';
 
+let actionQueue = [];
+
 export default function configureSocket(socket, store) {
   socket.addEventListener('open', () => {
-    socket.send(JSON.stringify({
-      type: commands.INIT,
-      data: 'Ma name!',
-    }));
+    // console.log('Socket connected...');
   });
 
   socket.addEventListener('message', (event) => {
     const { type, data } = JSON.parse(event.data);
+    // console.log({ event: event.data, type, data });
     if (type === commands.INIT) {
-      console.log('Initialized:', data);
+      // console.log('actions available', actions);
+      store.dispatch({ ...data, incoming: true });
+      // console.log('Initialized:', data);
     } else if (type === commands.ACTION) {
-      console.log(data);
-      store.dispatch(data);
+      // console.log('received action:', data);
+      actionQueue.push({ ...data, incoming: true });
     }
   });
 
-  // socket.on(commands.READY, () => {
-  //   dumpActionQueue(socket);
-  // });
-
   window.onbeforeunload = () => {
     socket.close();
+  };
+
+  // return a function that flushes the read head
+  return () => {
+    actionQueue.forEach((action) => {
+      store.dispatch(action);
+    });
+    actionQueue = [];
   };
 }

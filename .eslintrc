@@ -9,6 +9,7 @@
     "no-use-before-define": ["error", { "functions": false, "classes": false }],
     "max-len": ["warn", { "code": 120, "comments": 150 }],
     "no-mixed-operators": [1, {"allowSamePrecedence": true}],
+    "no-console": [1, {"allow": ["warn", "error"]}],
 
     "react/jsx-filename-extension": 0,
     "react/require-default-props": 0,
