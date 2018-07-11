@@ -1,0 +1,10 @@
+import '../actions/index.spec.js';
+import '../client/components/Player.spec.js';
+import '../client/components/Board.spec.js';
+import '../client/components/Polyline.spec.js';
+import '../client/components/PlayerStart.spec.js';
+import '../client/components/Players.spec.js';
+import '../reducers/index.spec.js';
+import '../server/sessions.spec.js';
+import '../server/pacemaker.spec.js';
+import '../utils/calc.spec.js';
