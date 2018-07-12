@@ -1,46 +1,29 @@
 /* eslint-env mocha */
-const chai = chai ? chai : require('chai');
-const { expect } = chai;
+import { expect, shallow, React } from '../../utils/testComponent';
 
-import React from 'react';
-import { render, unmountComponentAtNode } from 'react-dom';
-import { PlayerStart, select, dispatchers, mergeProps } from './PlayerStart.js';
+import { PlayerStart, select, dispatchers, mergeProps } from './PlayerStart';
 import reducer from '../../reducers/index.mjs';
 import actions from '../../actions/index.mjs';
 import { actions as actionTypes } from '../../utils/constants.mjs';
 
-const { PLAYER_ADD, PLAYER_CURRENT } = actionTypes;
+const { PLAYER_ADD } = actionTypes;
 const perimeter = [[0, 0], [100, 0], [100, 100], [0, 100], [0, 0]];
 
 describe('PlayerStart', () => {
   describe('component', () => {
-    let node;
-    beforeEach(() => {
-      node = document.createElement('div');
-    });
-
-    afterEach(() => {
-      unmountComponentAtNode(node);
-    });
-
-    const make = (child) => {
-      render(child, node);
-      return node.firstChild;
-    };
-
     it('shows with the visible Attribute', () => {
-      const subject = make(<PlayerStart visible onSubmit={x => x} />);
-      expect(subject.getAttribute('visible')).to.equal('visible');
+      const subject = shallow(<PlayerStart visible onSubmit={x => x} />);
+      expect(subject.props().visible).to.equal('visible');
     });
 
     it('does not show without the visible Attribute', () => {
-      const subject = make(<PlayerStart onSubmit={x => x} />);
-      expect(subject.getAttribute('visible')).to.equal(null);
+      const subject = shallow(<PlayerStart onSubmit={x => x} />);
+      expect(subject.props().visible).to.equal(null);
     });
 
     it('shows a "crashed" message when crashed', () => {
-      const subject = make(<PlayerStart visible crashed onSubmit={x => x} />);
-      expect(subject.querySelector('h3').innerHTML.toLowerCase().includes('die')).to.equal(true);
+      const subject = shallow(<PlayerStart visible crashed onSubmit={x => x} />);
+      expect(subject.find('h3').text().toLowerCase().includes('die')).to.equal(true);
     });
   });
 
@@ -82,13 +65,13 @@ describe('PlayerStart', () => {
   });
 
   describe('dispatcher', () => {
-    it('calls dispatch twice', () => {
+    it('dispatches a player-add', () => {
       const dispatches = [];
       const dispatch = action => dispatches.push(action);
       dispatchers(dispatch).joinGame('bob', 50, 50);
       expect(dispatches).to.deep.equal([
         { type: PLAYER_ADD, data: { name: 'bob', x: 50, y: 50 } },
-        { type: PLAYER_CURRENT, data: 'bob' },
+        // { type: PLAYER_CURRENT, data: 'bob' },
       ]);
     });
   });

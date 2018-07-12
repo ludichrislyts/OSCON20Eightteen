@@ -21,7 +21,11 @@ export const Player = ({
     </svg>
     <circle cx={x} cy={y} r={timeToStart ? 7 : 3} fill={color} />
     { timeToStart
-      ? (<text x={x} y={y + 1} textAnchor="middle" alignmentBaseline="central">{timeToStart}</text>)
+      ? (
+        <text x={x} y={y + 1} textAnchor="middle" alignmentBaseline="central">
+          {timeToStart}
+        </text>
+      )
       : null
     }
   </g>

@@ -1,10 +1,7 @@
 /* eslint-env mocha */
-const chai = chai ? chai : require('chai');
-const { expect } = chai;
+import { expect, shallow, React } from '../../utils/testComponent';
 
-import React from 'react';
-import { render, unmountComponentAtNode } from 'react-dom';
-import { Board, select } from './Board.js';
+import { Board, select } from './Board';
 import reducer from '../../reducers/index.mjs';
 import actions from '../../actions/index.mjs';
 
@@ -15,28 +12,15 @@ describe('Board', () => {
   ];
 
   describe('component', () => {
-    let node;
-    beforeEach(() => {
-      node = document.createElement('svg');
-    });
-
-    afterEach(() => {
-      unmountComponentAtNode(node);
-    });
-
-    const make = (child) => {
-      render(child, node);
-      return node.firstChild;
-    };
-
     it('renders without crashing', () => {
-      render(<Board />, node);
-      expect(node.innerHTML).to.equal('<g class="board"></g>');
+      const subject = shallow(<Board />);
+      expect(subject.find('g')).to.have.length(1);
     });
 
-    it('renders all the parts', () => {
-      const subject = make(<Board obstacles={board} />);
-      expect(subject.querySelectorAll('path').length).to.equal(2);
+    it('renders all the polylines', () => {
+      const subject = shallow(<Board obstacles={board} />);
+      const polylines = subject.find('Polyline');
+      expect(polylines).to.have.length(2);
     });
   });
 

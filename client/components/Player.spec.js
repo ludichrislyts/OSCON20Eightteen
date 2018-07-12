@@ -1,26 +1,14 @@
 /* eslint-env mocha */
-const chai = chai ? chai : require('chai');
-const { expect } = chai;
+import { expect, shallow, React } from '../../utils/testComponent';
 
-import React from 'react';
-import { render, unmountComponentAtNode } from 'react-dom';
-import { Player, select } from './Player.js';
+import { Player, select } from './Player';
 import reducer from '../../reducers/index.mjs';
 import actions from '../../actions/index.mjs';
 
 describe('Player', () => {
   describe('component', () => {
-    let node;
-    beforeEach(() => {
-      node = document.createElement('div');
-    });
-
-    afterEach(() => {
-      unmountComponentAtNode(node);
-    });
-
     it('works', () => {
-      render(<Player name="bob" x={50} y={50} path={[]} angle={0} timeToStart={3} status="STARTING" />, node);
+      shallow(<Player name="bob" color="yellow" x={50} y={50} path={[]} angle={0} timeToStart={3} status="STARTING" />);
     });
   });
 

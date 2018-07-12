@@ -13,7 +13,7 @@ export const PlayerStart = ({ visible = false, crashed = false, onSubmit }) => {
     if (name) onSubmit(textInput.current.value);
   };
   return (
-    <div className="player-start" visible={visible ? 'visible' : null} >
+    <div className="player-start" visible={visible ? 'visible' : null}>
       <form className="player-start__form" onSubmit={submit}>
         <h3>{ crashed ? 'YOU HAVE DIED. Play again?' : 'Enter your name to start playing' }</h3>
         <input ref={textInput} placeholder="or a nickname..." type="text" />
