@@ -4,9 +4,7 @@ import { segmentIntersectsPolyline, segmentsIntersect } from '../utils/calc.mjs'
 export const SECOND = 1000;
 export const START_COUNTDOWN = 3 * SECOND;
 export const CRASH_LINGER = 2 * SECOND;
-const {
-  STATE_SET, BOARD_SET, PLAYER_ADD, PLAYER_CURRENT, PLAYER_DIRECTION, TIME,
-} = actions;
+const { STATE_SET, BOARD_SET, PLAYER_ADD, PLAYER_CURRENT, PLAYER_DIRECTION, TIME } = actions;
 const { STARTING, PLAYING, CRASHED } = playerStates;
 
 export const initialState = {
@@ -181,9 +179,7 @@ export default (state = initialState, action) => {
         }
       });
       if (somePlayersChanged) {
-        return {
-          ...state, time, players: newPlayers, colors,
-        };
+        return { ...state, time, players: newPlayers, colors };
       }
       return { ...state, time };
     }

@@ -21,6 +21,8 @@ describe('Board', () => {
       const subject = shallow(<Board obstacles={board} />);
       const polylines = subject.find('Polyline');
       expect(polylines).to.have.length(2);
+      expect(polylines.first().prop('points')).to.equal(board[0]);
+      expect(polylines.last().prop('points')).to.equal(board[1]);
     });
   });
 

@@ -1,10 +1,8 @@
 /* eslint-env mocha */
-const chai = chai ? chai : require('chai');
-const { expect } = chai;
-
+import { expect } from 'chai';
 import { actions, directions, playerStates } from '../utils/constants.mjs';
 import indexReducer, { initialState, START_COUNTDOWN } from './index.mjs';
-import reducerFreezer from '../utils/reducerFreezer.js';
+import reducerFreezer from '../utils/reducerFreezer';
 import { pointIsInPolygon } from '../utils/calc.mjs';
 
 const reducer = reducerFreezer(indexReducer);

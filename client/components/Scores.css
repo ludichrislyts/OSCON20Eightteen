@@ -1,0 +1,51 @@
+.scoreboard {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 100px;
+  color: white;
+  min-height: 80px;
+  background: rgba(0,0,0,0.3);
+  padding: 10px 20px;
+}
+
+.scoreboard::after{
+  content: '';
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: -30px;
+  border-left: 30px solid transparent;
+  border-top: 30px solid rgba(0,0,0,0.3);
+}
+
+.scoreboard h3 {
+  margin: 0 0 5px;
+}
+
+.score-player {
+  margin-bottom: 10px;
+}
+
+.score-player__color {
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  background: #777;
+  display: inline-block;
+  vertical-align: text-bottom;
+  margin-right: 4px;
+}
+
+.score-player__name {
+  display: inline;
+  font-size: 23px;
+}
+
+.score-player__score {
+  margin-left: 25px;
+  font-style: italic;
+  color: rgba(255,255,255,0.75);
+  font-size: 14px;
+}

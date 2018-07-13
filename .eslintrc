@@ -4,7 +4,7 @@
   "env": {
   },
   "rules": {
-    "object-curly-newline": ["warn", { "minProperties": 6 }],
+    "object-curly-newline": ["warn", { "consistent": true, "minProperties": 8 }],
     "no-use-before-define": ["error", { "functions": false, "classes": false }],
     "max-len": ["warn", { "code": 120, "comments": 150 }],
     "no-mixed-operators": [1, {"allowSamePrecedence": true}],

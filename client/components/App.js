@@ -1,9 +1,11 @@
+/* globals window */
 import { connect } from 'react-redux';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Board from './Board';
 import Players from './Players';
 import PlayerStart from './PlayerStart';
+import Scores from './Scores';
 
 export const App = ({
   minX = 0, minY = 0, width = 100, height = 100, x, y, zoomFactor,
@@ -23,6 +25,7 @@ export const App = ({
         <Board />
         <Players />
       </svg>
+      <Scores />
       <PlayerStart />
     </div>
   );

@@ -1,6 +1,7 @@
 import './index.css';
 import './components/App.css';
 import './components/Board.css';
+import './components/Scores.css';
 import './components/Player.css';
 import './components/PlayerStart.css';
 
